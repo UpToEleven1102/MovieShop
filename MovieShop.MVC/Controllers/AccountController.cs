@@ -10,6 +10,7 @@ namespace MovieShop.MVC.Controllers
             return View();
         }
         
+        [HttpGet("/Account/Details/{id}")]
         public IActionResult Details(int id)
         {
             Console.WriteLine(id);
