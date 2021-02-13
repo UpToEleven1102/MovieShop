@@ -1,9 +1,19 @@
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using MovieShop.Core.Entities;
+using MovieShop.Core.ServiceInterface;
 
 namespace MovieShop.MVC.Controllers
 {
     public class MoviesController : Controller
     {
+        private readonly IMovieService _service;
+        public MoviesController(IMovieService service)
+        {
+            _service = service;
+        }
+        
         public IActionResult Index()
         {
             return View();
@@ -12,13 +22,15 @@ namespace MovieShop.MVC.Controllers
         [Route("/movies/top-revenue-movies")]
         public IActionResult TopRevenueMovies()
         {
-            return View();
+            var movies = _service.GetTopGrossingMovies();
+            return View(movies);
         }
 
         [Route("/movies/top-rated-movies")]
         public IActionResult TopRatedMovies()
         {
-            return View();
+            var movies = _service.GetTopRatedMovies();
+            return View(movies);
         }
 
         // id is not required? no?

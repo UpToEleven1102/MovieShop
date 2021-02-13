@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MovieShop.Core.RepositoryInterface;
+using MovieShop.Core.ServiceInterface;
+using MovieShop.Infrastructure.Repositories;
+using MovieShop.Infrastructure.Services;
 
 namespace MovieShop.MVC
 {
@@ -24,6 +28,8 @@ namespace MovieShop.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddTransient<IMovieRepository, MovieRepository>();
+            services.AddTransient<IMovieService, MovieService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
