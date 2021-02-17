@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MovieShop.Core.RepositoryInterface;
 using MovieShop.Core.ServiceInterface;
+using MovieShop.Infrastructure.Data;
 using MovieShop.Infrastructure.Repositories;
 using MovieShop.Infrastructure.Services;
 
@@ -28,6 +30,8 @@ namespace MovieShop.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDbContext<MovieShopDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("MovieDbConnectionString"), b => b.MigrationsAssembly("MovieShop.MVC")));
             services.AddTransient<IMovieRepository, MovieRepository>();
             services.AddTransient<IMovieService, MovieService>();
         }
