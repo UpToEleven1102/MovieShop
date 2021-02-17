@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -22,6 +23,12 @@ namespace MovieShop.Infrastructure.Data
         public DbSet<User> Users { get; set; }
 
         public DbSet<Cast> Casts { get; set; }
+        
+        public DbSet<Purchase> Purchases { get; set; }
+
+        public DbSet<Favorite> Favorites { get; set; }
+
+        public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,11 +50,8 @@ namespace MovieShop.Infrastructure.Data
                         b.Property(mc => mc.Character).HasMaxLength(450);
                         b.HasKey(mc => new {mc.CastId, mc.MovieId, mc.Character});
                     });
-            // modelBuilder.Entity<Movie>().HasMany(m => m.Casts).WithMany(c => c.Movies)
-            //     .UsingEntity<Dictionary<string, object>>("MovieCast",
-            //         m => m.HasOne<Cast>().WithMany().HasForeignKey("CastId"),
-            //         c => c.HasOne<Movie>().WithMany().HasForeignKey("MovieId"),
-            //         b => b.Property<string>("Character").HasMaxLength(450));
+            modelBuilder.Entity<Purchase>(ConfigurePurchase);
+            modelBuilder.Entity<Review>(ConfigureReview);
         }
 
         private void ConfigureMovie(EntityTypeBuilder<Movie> builder)
@@ -97,6 +101,20 @@ namespace MovieShop.Infrastructure.Data
             builder.HasKey(c => c.Id);
             builder.Property(c => c.Name).HasMaxLength(128);
             builder.Property(c => c.ProfilePath).HasMaxLength(2084);
+        }
+
+        private void ConfigurePurchase(EntityTypeBuilder<Purchase> builder)
+        {
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.PurchaseNumber).ValueGeneratedOnAdd();
+            builder.Property(p => p.TotalPrice).HasColumnType("decimal(18, 2)").IsRequired();
+            builder.Property(p => p.PurchaseDateTime).HasDefaultValueSql("getdate()");
+        }
+        
+        private void ConfigureReview(EntityTypeBuilder<Review> builder)
+        {
+            builder.HasKey(r => new { r.MovieId, r.UserId });
+            builder.Property(r => r.Rating).HasColumnType("decimal(3,2)");
         }
     }
 }
