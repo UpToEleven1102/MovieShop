@@ -25,5 +25,6 @@ namespace MovieShop.Core.Entities
         public string CreatedBy { get; set; }
 
         public IEnumerable<Trailer> Trailers { get; set; }
+        public IEnumerable<Cast> Casts { get; set; }
     }
 }

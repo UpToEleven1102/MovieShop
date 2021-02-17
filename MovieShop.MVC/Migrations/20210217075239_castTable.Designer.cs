@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieShop.Infrastructure.Data;
 
 namespace MovieShop.MVC.Migrations
 {
     [DbContext(typeof(MovieShopDbContext))]
-    partial class MovieShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210217075239_castTable")]
+    partial class castTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,25 +138,6 @@ namespace MovieShop.MVC.Migrations
                     b.ToTable("Movie");
                 });
 
-            modelBuilder.Entity("MovieShop.Core.Entities.MovieCast", b =>
-                {
-                    b.Property<int>("CastId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Character")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CastId", "MovieId", "Character");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("MovieCast");
-                });
-
             modelBuilder.Entity("MovieShop.Core.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -269,21 +252,6 @@ namespace MovieShop.MVC.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRole");
-                });
-
-            modelBuilder.Entity("MovieShop.Core.Entities.MovieCast", b =>
-                {
-                    b.HasOne("MovieShop.Core.Entities.Cast", null)
-                        .WithMany()
-                        .HasForeignKey("CastId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MovieShop.Core.Entities.Movie", null)
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("MovieShop.Core.Entities.Trailer", b =>

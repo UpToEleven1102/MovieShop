@@ -5,11 +5,23 @@ using MovieShop.Core.Entities;
 
 namespace MovieShop.Infrastructure.Data
 {
-    public class MovieShopDbContext: DbContext
+    public class MovieShopDbContext : DbContext
     {
         public MovieShopDbContext(DbContextOptions options) : base(options)
         {
         }
+
+        public DbSet<Genre> Genres { get; set; }
+
+        public DbSet<Movie> Movies { get; set; }
+
+        public DbSet<Trailer> Trailers { get; set; }
+
+        public DbSet<Role> Roles { get; set; }
+
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<Cast> Casts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -17,13 +29,28 @@ namespace MovieShop.Infrastructure.Data
             modelBuilder.Entity<Movie>(ConfigureMovie);
             modelBuilder.Entity<Trailer>(ConfigureTrailer);
             modelBuilder.Entity<User>(ConfigureUser);
-            modelBuilder.Entity<User>().HasMany(u => u.Roles).WithMany( r => r.Users)
+            modelBuilder.Entity<User>().HasMany(u => u.Roles).WithMany(r => r.Users)
                 .UsingEntity<Dictionary<string, object>>("UserRole",
                     u => u.HasOne<Role>().WithMany().HasForeignKey("RoleId"),
                     r => r.HasOne<User>().WithMany().HasForeignKey("UserId"));
+            modelBuilder.Entity<Cast>(ConfigureCast);
+            modelBuilder.Entity<Movie>().HasMany(m => m.Casts).WithMany(c => c.Movies)
+                .UsingEntity<MovieCast>(
+                    m => m.HasOne<Cast>().WithMany().HasForeignKey("CastId"),
+                    c => c.HasOne<Movie>().WithMany().HasForeignKey("MovieId"),
+                    b =>
+                    {
+                        b.Property(mc => mc.Character).HasMaxLength(450);
+                        b.HasKey(mc => new {mc.CastId, mc.MovieId, mc.Character});
+                    });
+            // modelBuilder.Entity<Movie>().HasMany(m => m.Casts).WithMany(c => c.Movies)
+            //     .UsingEntity<Dictionary<string, object>>("MovieCast",
+            //         m => m.HasOne<Cast>().WithMany().HasForeignKey("CastId"),
+            //         c => c.HasOne<Movie>().WithMany().HasForeignKey("MovieId"),
+            //         b => b.Property<string>("Character").HasMaxLength(450));
         }
 
-        void ConfigureMovie(EntityTypeBuilder<Movie> builder)
+        private void ConfigureMovie(EntityTypeBuilder<Movie> builder)
         {
             builder.ToTable("Movie");
             builder.HasKey(m => m.Id);
@@ -39,7 +66,7 @@ namespace MovieShop.Infrastructure.Data
             builder.Property(m => m.CreatedDate).HasDefaultValueSql("getdate()");
         }
 
-        void ConfigureTrailer(EntityTypeBuilder<Trailer> builder)
+        private void ConfigureTrailer(EntityTypeBuilder<Trailer> builder)
         {
             builder.ToTable("Trailer");
             builder.HasKey(t => t.Id);
@@ -47,7 +74,7 @@ namespace MovieShop.Infrastructure.Data
             builder.Property(t => t.Name).HasMaxLength(2084);
         }
 
-        void ConfigureUser(EntityTypeBuilder<User> builder)
+        private void ConfigureUser(EntityTypeBuilder<User> builder)
         {
             builder.ToTable("User");
             builder.HasKey(t => t.Id);
@@ -64,15 +91,12 @@ namespace MovieShop.Infrastructure.Data
             builder.Property(t => t.AccessFailedCount).HasDefaultValue(0);
         }
 
-        public DbSet<Genre> Genres { get; set; }
-        
-        public DbSet<Movie> Movies { get; set; }
-
-        public DbSet<Trailer> Trailers { get; set; }
-
-        public DbSet<Role> Roles { get; set; }
-        
-        public DbSet<User> Users { get; set; }
-        
+        private void ConfigureCast(EntityTypeBuilder<Cast> builder)
+        {
+            builder.ToTable("Cast");
+            builder.HasKey(c => c.Id);
+            builder.Property(c => c.Name).HasMaxLength(128);
+            builder.Property(c => c.ProfilePath).HasMaxLength(2084);
+        }
     }
 }
