@@ -26,5 +26,7 @@ namespace MovieShop.Core.Entities
 
         public IEnumerable<Trailer> Trailers { get; set; }
         public IEnumerable<Cast> Casts { get; set; }
+
+        public IEnumerable<Genre> Genres { get; set; }
     }
 }

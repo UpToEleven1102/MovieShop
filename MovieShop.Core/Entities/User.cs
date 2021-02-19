@@ -13,11 +13,11 @@ namespace MovieShop.Core.Entities
         public string HashedPassword { get; set; }
         public string Salt { get; set; }
         public string PhoneNumber { get; set; }
-        public bool TwoFactorEnabled { get; set; }
-        public DateTime LockoutEndDate { get; set; }
-        public DateTime LastLoginDateTime { get; set; }
-        public bool IsLocked { get; set; }
-        public int AccessFailedCount { get; set; }
+        public bool? TwoFactorEnabled { get; set; }
+        public DateTime? LockoutEndDate { get; set; }
+        public DateTime? LastLoginDateTime { get; set; }
+        public bool? IsLocked { get; set; }
+        public int? AccessFailedCount { get; set; }
         public IEnumerable<Role> Roles { get; set; }
     }
 }

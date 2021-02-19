@@ -31,7 +31,8 @@ namespace MovieShop.MVC
         {
             services.AddControllersWithViews();
             services.AddDbContext<MovieShopDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("MovieDbConnectionString"), b => b.MigrationsAssembly("MovieShop.MVC")));
+                options.UseSqlServer(Configuration.GetConnectionString("MovieDbConnectionString"), 
+                    b => b.MigrationsAssembly("MovieShop.MVC")));
             services.AddTransient<IMovieRepository, MovieRepository>();
             services.AddTransient<IMovieService, MovieService>();
         }

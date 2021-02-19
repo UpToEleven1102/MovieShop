@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -23,7 +22,7 @@ namespace MovieShop.Infrastructure.Data
         public DbSet<User> Users { get; set; }
 
         public DbSet<Cast> Casts { get; set; }
-        
+
         public DbSet<Purchase> Purchases { get; set; }
 
         public DbSet<Favorite> Favorites { get; set; }
@@ -52,6 +51,10 @@ namespace MovieShop.Infrastructure.Data
                     });
             modelBuilder.Entity<Purchase>(ConfigurePurchase);
             modelBuilder.Entity<Review>(ConfigureReview);
+            modelBuilder.Entity<Movie>().HasMany(m => m.Genres).WithMany(g => g.Movies)
+                .UsingEntity<Dictionary<string, object>>("MovieGenre",
+                    m => m.HasOne<Genre>().WithMany().HasForeignKey("GenreId"),
+                    g => g.HasOne<Movie>().WithMany().HasForeignKey("MovieId"));
         }
 
         private void ConfigureMovie(EntityTypeBuilder<Movie> builder)
@@ -88,7 +91,6 @@ namespace MovieShop.Infrastructure.Data
             builder.Property(t => t.HashedPassword).HasMaxLength(1024);
             builder.Property(t => t.Salt).HasMaxLength(1024);
             builder.Property(t => t.PhoneNumber).HasMaxLength(16);
-            builder.Property(t => t.TwoFactorEnabled).HasDefaultValue(false);
             builder.Property(t => t.LockoutEndDate).HasDefaultValue(null);
             builder.Property(t => t.LastLoginDateTime).HasDefaultValue(null);
             builder.Property(t => t.IsLocked).HasDefaultValue(false);
@@ -110,10 +112,10 @@ namespace MovieShop.Infrastructure.Data
             builder.Property(p => p.TotalPrice).HasColumnType("decimal(18, 2)").IsRequired();
             builder.Property(p => p.PurchaseDateTime).HasDefaultValueSql("getdate()");
         }
-        
+
         private void ConfigureReview(EntityTypeBuilder<Review> builder)
         {
-            builder.HasKey(r => new { r.MovieId, r.UserId });
+            builder.HasKey(r => new {r.MovieId, r.UserId});
             builder.Property(r => r.Rating).HasColumnType("decimal(3,2)");
         }
     }
