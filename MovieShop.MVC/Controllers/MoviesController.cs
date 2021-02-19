@@ -14,7 +14,8 @@ namespace MovieShop.MVC.Controllers
             _service = service;
         }
         
-        public IActionResult Index()
+        [ActionName("Details")]
+        public IActionResult Index(int id)
         {
             return View();
         }
