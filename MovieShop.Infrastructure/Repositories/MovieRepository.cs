@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using MovieShop.Core.Entities;
 using MovieShop.Core.RepositoryInterface;
 using MovieShop.Infrastructure.Data;
@@ -11,6 +12,7 @@ namespace MovieShop.Infrastructure.Repositories
         public MovieRepository(MovieShopDbContext dbContext) : base(dbContext)
         {
         }
+
         public IEnumerable<Movie> GetTopRevenueMovies()
         {
             return db.Movies.OrderByDescending(m => m.Revenue).Take(25);
@@ -28,6 +30,15 @@ namespace MovieShop.Infrastructure.Repositories
                 new Movie {Id = 16, Title = "Furious 7", Budget = 1200000}
             };
             return movies;
+        }
+
+        public override Movie GetByIdAsync(int id)
+        {
+            return db.Movies.Include(m => m.MovieCasts)
+                .ThenInclude(mc => mc.Cast)
+                .Include(m => m.Genres)
+                .Include(m => m.Reviews)
+                .FirstOrDefault(m => m.Id == id);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace MovieShop.Infrastructure.Data
         public DbSet<Favorite> Favorites { get; set; }
 
         public DbSet<Review> Reviews { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -40,15 +40,16 @@ namespace MovieShop.Infrastructure.Data
                     u => u.HasOne<Role>().WithMany().HasForeignKey("RoleId"),
                     r => r.HasOne<User>().WithMany().HasForeignKey("UserId"));
             modelBuilder.Entity<Cast>(ConfigureCast);
-            modelBuilder.Entity<Movie>().HasMany(m => m.Casts).WithMany(c => c.Movies)
-                .UsingEntity<MovieCast>(
-                    m => m.HasOne<Cast>().WithMany().HasForeignKey("CastId"),
-                    c => c.HasOne<Movie>().WithMany().HasForeignKey("MovieId"),
-                    b =>
-                    {
-                        b.Property(mc => mc.Character).HasMaxLength(450);
-                        b.HasKey(mc => new {mc.CastId, mc.MovieId, mc.Character});
-                    });
+            modelBuilder.Entity<MovieCast>(ConfigureMovieCast);
+            // modelBuilder.Entity<Movie>().HasMany(m => m.Casts).WithMany(c => c.Movies)
+            //     .UsingEntity<MovieCast>(
+            //         m => m.HasOne<Cast>().WithMany().HasForeignKey("CastId"),
+            //         c => c.HasOne<Movie>().WithMany().HasForeignKey("MovieId"),
+            //         b =>
+            //         {
+            //             b.Property(mc => mc.Character).HasMaxLength(450);
+            //             b.HasKey(mc => new {mc.CastId, mc.MovieId, mc.Character});
+            //         });
             modelBuilder.Entity<Purchase>(ConfigurePurchase);
             modelBuilder.Entity<Review>(ConfigureReview);
             modelBuilder.Entity<Movie>().HasMany(m => m.Genres).WithMany(g => g.Movies)
@@ -71,6 +72,14 @@ namespace MovieShop.Infrastructure.Data
             builder.Property(m => m.OriginalLanguage).HasMaxLength(64);
             builder.Property(m => m.Price).HasColumnType("decimal(5, 2)").HasDefaultValue(9.9m);
             builder.Property(m => m.CreatedDate).HasDefaultValueSql("getdate()");
+        }
+
+        private void ConfigureMovieCast(EntityTypeBuilder<MovieCast> builder)
+        {
+            builder.HasKey(mc => new { mc.MovieId, mc.CastId, mc.Character });
+            builder.Property(mc => mc.Character).HasMaxLength(450);
+            builder.HasOne<Movie>(mc => mc.Movie).WithMany(mc => mc.MovieCasts).HasForeignKey("MovieId");
+            builder.HasOne<Cast>(c => c.Cast).WithMany(mc => mc.MovieCasts).HasForeignKey("CastId");
         }
 
         private void ConfigureTrailer(EntityTypeBuilder<Trailer> builder)

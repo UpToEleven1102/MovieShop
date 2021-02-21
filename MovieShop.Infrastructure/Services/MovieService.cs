@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MovieShop.Core.Entities;
 using MovieShop.Core.Models.Response;
 using MovieShop.Core.RepositoryInterface;
@@ -6,9 +7,10 @@ using MovieShop.Core.ServiceInterface;
 
 namespace MovieShop.Infrastructure.Services
 {
-    public class MovieService: IMovieService
+    public class MovieService : IMovieService
     {
         private readonly IMovieRepository _repository;
+
         public MovieService(IMovieRepository repository)
         {
             _repository = repository;
@@ -16,16 +18,61 @@ namespace MovieShop.Infrastructure.Services
 
         public MovieDetailsResponse GetMovieById(int id)
         {
-            MovieDetailsResponse movieDetail = new MovieDetailsResponse();
+            var movieDetail = new MovieDetailsResponse();
             var movie = _repository.GetByIdAsync(id);
             movieDetail.Id = movie.Id;
-            // finish mapping movieDetail here
+            movieDetail.Title = movie.Title;
+            movieDetail.Overview = movie.Overview;
+            movieDetail.Tagline = movie.Tagline;
+            movieDetail.Budget = movie.Budget;
+            movieDetail.Revenue = movie.Revenue;
+            movieDetail.ImdbUrl = movie.ImdbUrl;
+            movieDetail.TmdbUrl = movie.TmdbUrl;
+            movieDetail.PosterUrl = movie.PosterUrl;
+            movieDetail.BackdropUrl = movie.BackdropUrl;
+            movieDetail.OriginalLanguage = movie.OriginalLanguage;
+            movieDetail.ReleaseDate = movie.ReleaseDate;
+            movieDetail.RunTime = movie.RunTime;
+            movieDetail.Price = movie.Price;
+            movieDetail.Genres = new List<GenreModel>();
+            foreach (var genre in movie.Genres)
+                movieDetail.Genres.Add(new GenreModel
+                {
+                    Id = genre.Id,
+                    Name = genre.Name
+                });
+
+            movieDetail.Casts = new List<CastResponseModel>();
+            foreach (var mc in movie.MovieCasts)
+            {
+               movieDetail.Casts.Add(new CastResponseModel()
+               {
+                   Id = mc.Cast.Id,
+                   Name = mc.Cast.Name,
+                   Gender =  mc.Cast.Gender,
+                   TmdbUrl = mc.Cast.TmdbUrl,
+                   ProfilePath = mc.Cast.ProfilePath,
+                   Character = mc.Character
+               }); 
+            }
+
+            if (movie.Reviews.Any())
+            {
+                decimal rating = 0;
+                foreach (var review in movie.Reviews)
+                {
+                    rating += review.Rating;
+                }
+
+                movieDetail.Rating = rating / movie.Reviews.Count();
+            }
+            
             return movieDetail;
         }
 
         public IEnumerable<MovieDetailsResponse> GetTopGrossingMovies()
         {
-            List<MovieDetailsResponse> movieDetails = new List<MovieDetailsResponse>();
+            var movieDetails = new List<MovieDetailsResponse>();
             var movies = _repository.GetTopRevenueMovies();
             foreach (var movie in movies)
             {

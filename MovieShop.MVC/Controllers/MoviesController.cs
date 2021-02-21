@@ -17,7 +17,8 @@ namespace MovieShop.MVC.Controllers
         [ActionName("Details")]
         public IActionResult Index(int id)
         {
-            return View();
+            var movieDetail = _service.GetMovieById(id);
+            return View(movieDetail);
         }
 
         [Route("/movies/top-revenue-movies")]

@@ -17,7 +17,7 @@ namespace MovieShop.Infrastructure.Repositories
             db = dbContext;
         }
 
-        public T GetByIdAsync(int id)
+        public virtual T GetByIdAsync(int id)
         {
             return db.Set<T>().Find(id);
         }

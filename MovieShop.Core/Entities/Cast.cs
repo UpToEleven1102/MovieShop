@@ -14,6 +14,6 @@ namespace MovieShop.Core.Entities
         
         public string ProfilePath { get; set; }
 
-        public IEnumerable<Movie> Movies { get; set; }
+        public IEnumerable<MovieCast> MovieCasts { get; set; }
     }
 }
