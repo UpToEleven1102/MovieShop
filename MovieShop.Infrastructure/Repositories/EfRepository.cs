@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MovieShop.Core.RepositoryInterface;
 using MovieShop.Infrastructure.Data;
@@ -12,54 +13,54 @@ namespace MovieShop.Infrastructure.Repositories
     {
         protected readonly MovieShopDbContext db;
 
-        public EfRepository(MovieShopDbContext dbContext)
+        protected EfRepository(MovieShopDbContext dbContext)
         {
             db = dbContext;
         }
 
-        public virtual T GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
-            return db.Set<T>().Find(id);
+            return await db.Set<T>().FindAsync(id);
         }
 
-        public IEnumerable<T> ListAllAsync()
+        public async Task<IEnumerable<T>> ListAllAsync()
         {
-            return db.Set<T>().ToList();
+            return await db.Set<T>().ToListAsync();
         }
 
-        public IEnumerable<T> ListAsync(Expression<Func<T, bool>> filter)
+        public async Task<IEnumerable<T>> ListAsync(Expression<Func<T, bool>> filter)
         {
-            return db.Set<T>().Where(filter).ToList();
+            return await db.Set<T>().Where(filter).ToListAsync();
         }
 
-        public int GetCountAsync(Expression<Func<T, bool>> filter = null)
+        public async Task<int> GetCountAsync(Expression<Func<T, bool>> filter = null)
         {
-            return filter == null ? db.Set<T>().Count() : db.Set<T>().Where(filter).Count();
+            return filter == null ? await db.Set<T>().CountAsync() : await db.Set<T>().Where(filter).CountAsync();
         }
 
-        public bool GetExistingAsync(Expression<Func<T, bool>> filter = null)
+        public async Task<bool> GetExistingAsync(Expression<Func<T, bool>> filter = null)
         {
-            return filter != null && db.Set<T>().Where(filter).Any();
+            return filter != null && await db.Set<T>().Where(filter).AnyAsync();
         }
 
-        public T AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
-            db.Set<T>().Add(entity);
-            db.SaveChanges();
+            await db.Set<T>().AddAsync(entity);
+            await db.SaveChangesAsync();
             return entity;
         }
 
-        public T UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             db.Entry(entity).State = EntityState.Modified;
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             return entity;
         }
 
-        public T DeleteAsync(T entity)
+        public async Task<T> DeleteAsync(T entity)
         {
             db.Set<T>().Remove(entity);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             return entity;
         }
     }

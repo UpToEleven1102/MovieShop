@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MovieShop.Core.Entities;
 using MovieShop.Core.Models.Response;
 using MovieShop.Core.RepositoryInterface;
@@ -16,10 +17,10 @@ namespace MovieShop.Infrastructure.Services
             _repository = repository;
         }
 
-        public MovieDetailsResponse GetMovieById(int id)
+        public async Task<MovieDetailsResponse> GetMovieById(int id)
         {
             var movieDetail = new MovieDetailsResponse();
-            var movie = _repository.GetByIdAsync(id);
+            var movie = await _repository.GetByIdAsync(id);
             movieDetail.Id = movie.Id;
             movieDetail.Title = movie.Title;
             movieDetail.Overview = movie.Overview;
@@ -44,36 +45,31 @@ namespace MovieShop.Infrastructure.Services
 
             movieDetail.Casts = new List<CastResponseModel>();
             foreach (var mc in movie.MovieCasts)
-            {
-               movieDetail.Casts.Add(new CastResponseModel()
-               {
-                   Id = mc.Cast.Id,
-                   Name = mc.Cast.Name,
-                   Gender =  mc.Cast.Gender,
-                   TmdbUrl = mc.Cast.TmdbUrl,
-                   ProfilePath = mc.Cast.ProfilePath,
-                   Character = mc.Character
-               }); 
-            }
+                movieDetail.Casts.Add(new CastResponseModel
+                {
+                    Id = mc.Cast.Id,
+                    Name = mc.Cast.Name,
+                    Gender = mc.Cast.Gender,
+                    TmdbUrl = mc.Cast.TmdbUrl,
+                    ProfilePath = mc.Cast.ProfilePath,
+                    Character = mc.Character
+                });
 
             if (movie.Reviews.Any())
             {
                 decimal rating = 0;
-                foreach (var review in movie.Reviews)
-                {
-                    rating += review.Rating;
-                }
+                foreach (var review in movie.Reviews) rating += review.Rating;
 
                 movieDetail.Rating = rating / movie.Reviews.Count();
             }
-            
+
             return movieDetail;
         }
 
-        public IEnumerable<MovieDetailsResponse> GetTopGrossingMovies()
+        public async Task<IEnumerable<MovieDetailsResponse>> GetTopGrossingMovies()
         {
             var movieDetails = new List<MovieDetailsResponse>();
-            var movies = _repository.GetTopRevenueMovies();
+            var movies = await _repository.GetTopRevenueMovies();
             foreach (var movie in movies)
             {
                 var movieCard = new MovieDetailsResponse
@@ -89,9 +85,9 @@ namespace MovieShop.Infrastructure.Services
             return movieDetails;
         }
 
-        public IEnumerable<Movie> GetTopRatedMovies()
+        public async Task<IEnumerable<Movie>> GetTopRatedMovies()
         {
-            return _repository.GetTopRatedMovies();
+            return await _repository.GetTopRatedMovies();
         }
     }
 }

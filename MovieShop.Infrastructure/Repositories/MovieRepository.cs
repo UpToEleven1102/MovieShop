@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MovieShop.Core.Entities;
 using MovieShop.Core.RepositoryInterface;
@@ -13,32 +15,23 @@ namespace MovieShop.Infrastructure.Repositories
         {
         }
 
-        public IEnumerable<Movie> GetTopRevenueMovies()
+        public async Task<IEnumerable<Movie>> GetTopRevenueMovies()
         {
-            return db.Movies.OrderByDescending(m => m.Revenue).Take(25);
+            return await db.Movies.OrderByDescending(m => m.Revenue).Take(25).ToListAsync();
         }
 
-        public IEnumerable<Movie> GetTopRatedMovies()
+        public Task<IEnumerable<Movie>> GetTopRatedMovies()
         {
-            var movies = new List<Movie>
-            {
-                new Movie {Id = 10, Title = "The Dark Knight", Budget = 1200000},
-                new Movie {Id = 11, Title = "The Hunger Games", Budget = 1200000},
-                new Movie {Id = 12, Title = "Django Unchained", Budget = 1200000},
-                new Movie {Id = 14, Title = "Harry Potter and the Philosopher's Stone", Budget = 1200000},
-                new Movie {Id = 15, Title = "Iron Man", Budget = 1200000},
-                new Movie {Id = 16, Title = "Furious 7", Budget = 1200000}
-            };
-            return movies;
+            throw new NotImplementedException();
         }
 
-        public override Movie GetByIdAsync(int id)
+        public override async Task<Movie> GetByIdAsync(int id)
         {
-            return db.Movies.Include(m => m.MovieCasts)
+            return await db.Movies.Include(m => m.MovieCasts)
                 .ThenInclude(mc => mc.Cast)
                 .Include(m => m.Genres)
                 .Include(m => m.Reviews)
-                .FirstOrDefault(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
         }
     }
 }

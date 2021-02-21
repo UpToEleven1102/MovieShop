@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MovieShop.Core.Entities;
 using MovieShop.Core.ServiceInterface;
@@ -15,23 +16,23 @@ namespace MovieShop.MVC.Controllers
         }
         
         [ActionName("Details")]
-        public IActionResult Index(int id)
+        public async Task<IActionResult> Index(int id)
         {
-            var movieDetail = _service.GetMovieById(id);
+            var movieDetail = await _service.GetMovieById(id);
             return View(movieDetail);
         }
 
         [Route("/movies/top-revenue-movies")]
-        public IActionResult TopRevenueMovies()
+        public async Task<IActionResult> TopRevenueMovies()
         {
-            var movies = _service.GetTopGrossingMovies();
+            var movies = await _service.GetTopGrossingMovies();
             return View(movies);
         }
 
         [Route("/movies/top-rated-movies")]
-        public IActionResult TopRatedMovies()
+        public async Task<IActionResult> TopRatedMovies()
         {
-            var movies = _service.GetTopRatedMovies();
+            var movies = await _service.GetTopRatedMovies();
             return View(movies);
         }
 
