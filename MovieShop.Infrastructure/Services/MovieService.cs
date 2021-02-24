@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,10 +12,14 @@ namespace MovieShop.Infrastructure.Services
     public class MovieService : IMovieService
     {
         private readonly IMovieRepository _repository;
+        private readonly ICurrentUser _currentUser;
+        private readonly IAsyncRepository<Purchase> _purchaseRepository;
 
-        public MovieService(IMovieRepository repository)
+        public MovieService(IMovieRepository repository, ICurrentUser currentUser, IAsyncRepository<Purchase> purchaseRepository)
         {
             _repository = repository;
+            _currentUser = currentUser;
+            _purchaseRepository = purchaseRepository;
         }
 
         public async Task<MovieDetailsResponse> GetMovieById(int id)
@@ -88,6 +93,74 @@ namespace MovieShop.Infrastructure.Services
         public async Task<IEnumerable<Movie>> GetTopRatedMovies()
         {
             return await _repository.GetTopRatedMovies();
+        }
+
+        public async Task<MovieDetailsResponse> BuyMovie(int id)
+        {
+            var movie = await _repository.GetByIdAsync(id);
+            if (movie == null)
+            {
+                return null;
+            }
+            var purchase = new Purchase()
+            {
+                UserId = _currentUser.UserId,
+                TotalPrice = movie.Price,
+                MovieId = id,
+                PurchaseNumber = Guid.NewGuid()
+            };
+
+            await _purchaseRepository.AddAsync(purchase);
+
+            if (purchase.Id > 0)
+            {
+                var movieDetail = new MovieDetailsResponse();
+                movieDetail.Id = movie.Id;
+                movieDetail.Title = movie.Title;
+                movieDetail.Overview = movie.Overview;
+                movieDetail.Tagline = movie.Tagline;
+                movieDetail.Budget = movie.Budget;
+                movieDetail.Revenue = movie.Revenue;
+                movieDetail.ImdbUrl = movie.ImdbUrl;
+                movieDetail.TmdbUrl = movie.TmdbUrl;
+                movieDetail.PosterUrl = movie.PosterUrl;
+                movieDetail.BackdropUrl = movie.BackdropUrl;
+                movieDetail.OriginalLanguage = movie.OriginalLanguage;
+                movieDetail.ReleaseDate = movie.ReleaseDate;
+                movieDetail.RunTime = movie.RunTime;
+                movieDetail.Price = movie.Price;
+                movieDetail.Genres = new List<GenreModel>();
+                foreach (var genre in movie.Genres)
+                    movieDetail.Genres.Add(new GenreModel
+                    {
+                        Id = genre.Id,
+                        Name = genre.Name
+                    });
+
+                movieDetail.Casts = new List<CastResponseModel>();
+                foreach (var mc in movie.MovieCasts)
+                    movieDetail.Casts.Add(new CastResponseModel
+                    {
+                        Id = mc.Cast.Id,
+                        Name = mc.Cast.Name,
+                        Gender = mc.Cast.Gender,
+                        TmdbUrl = mc.Cast.TmdbUrl,
+                        ProfilePath = mc.Cast.ProfilePath,
+                        Character = mc.Character
+                    });
+
+                if (movie.Reviews.Any())
+                {
+                    decimal rating = 0;
+                    foreach (var review in movie.Reviews) rating += review.Rating;
+
+                    movieDetail.Rating = rating / movie.Reviews.Count();
+                }
+
+                return movieDetail;
+            }
+
+            return null;
         }
     }
 }

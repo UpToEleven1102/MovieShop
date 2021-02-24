@@ -1,0 +1,43 @@
+@model MovieShop.Core.Models.Response.MovieDetailsResponse
+
+<style>
+  span.price-tag {
+    font-size: 16px;
+    font-weight: 600;
+    color: red;
+  }
+  img.width100 {
+    width:  100%;
+  }
+</style>
+
+<div class="modal fade" id="buyMovieModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Buy Movie</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <img class="width100" src="@Model.PosterUrl" alt="@Model.Title">
+          </div>
+          <div class="col">
+            <h3>@Model.Title</h3>
+            <p>@Model.Overview</p>
+            <p class="text-right">Price: <span class="price-tag">$@Model.Price</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <form asp-controller="User" asp-action="BuyMovie">
+          <input type="hidden" value="@Model.Id" name="id">
+          <button type="submit" class="btn btn-primary">Confirm Buy</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

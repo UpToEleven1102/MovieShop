@@ -13,5 +13,7 @@ namespace MovieShop.Core.ServiceInterface
         Task<IEnumerable<MovieDetailsResponse>> GetTopGrossingMovies();
 
         Task<IEnumerable<Movie>> GetTopRatedMovies();
+
+        Task<MovieDetailsResponse> BuyMovie(int id);
     }
 }
