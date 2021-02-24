@@ -29,4 +29,16 @@ namespace MovieShop.Core.Models.Request
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
     }
+
+    public class UserLoginRequestModel
+    {
+        [Required]
+        [MaxLength(50)]
+        [EmailAddress]
+        public string Email { get; set; }
+        
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
 }

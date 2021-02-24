@@ -34,6 +34,11 @@ namespace MovieShop.MVC.Controllers
         {
             return View();
         }
-        
+
+        // [HttpPost]
+        // public Task<IActionResult> Login(UserLoginRequestModel userModel)
+        // {
+        //     
+        // }
     }
 }
