@@ -69,5 +69,11 @@ namespace MovieShop.MVC.Controllers
 
             return LocalRedirect(returnUrl);
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Login");
+        }
     }
 }

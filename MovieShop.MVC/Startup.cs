@@ -39,6 +39,8 @@ namespace MovieShop.MVC
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
 
+            services.AddTransient<ICurrentUser, CurrentUser>();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
                 opt =>
                 {
@@ -46,6 +48,8 @@ namespace MovieShop.MVC
                     opt.ExpireTimeSpan = TimeSpan.FromHours(2);
                     opt.LoginPath = "/Account/Login";
                 });
+
+            services.AddHttpContextAccessor();
             
             services.AddDbContext<MovieShopDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MovieDbConnectionString"),
