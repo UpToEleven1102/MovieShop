@@ -31,6 +31,8 @@ namespace MovieShop.MVC
             
             services.AddTransient<IMovieRepository, MovieRepository>();
             services.AddTransient<IMovieService, MovieService>();
+
+            services.AddTransient<IReviewRepository, ReviewRepository>();
             
             services.AddTransient<IGenreService, GenreService>();
             services.AddTransient<IAsyncRepository<Genre>, EfRepository<Genre>>();

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MovieShop.Core.Entities;
+using MovieShop.Core.Models.Request;
 using MovieShop.Core.Models.Response;
 
 namespace MovieShop.Core.ServiceInterface
@@ -15,5 +16,7 @@ namespace MovieShop.Core.ServiceInterface
         Task<IEnumerable<Movie>> GetTopRatedMovies();
 
         Task<MovieDetailsResponse> BuyMovie(int id);
+
+        Task<bool> PostReview(ReviewRequestModel requestModel);
     }
 }

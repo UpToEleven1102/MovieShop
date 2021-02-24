@@ -1,3 +1,4 @@
+@using MovieShop.Core.Models.Request
 @using MovieShop.Core.ServiceInterface
 @model MovieShop.Core.Models.Response.MovieDetailsResponse
 @inject ICurrentUser CurrentUser
@@ -56,79 +57,99 @@
         z-index: 1;
     }
 </style>
-<div class="container-fluid">
-    <div class="row header">
-        <div class="overlay"></div>
-        <div class="col-md-4">
-            <img class="float-right img-fluid" src="@Model.PosterUrl" alt="@Model.Title">
-        </div>
-        <div class="col">
-            <div class="container">
-                <div class="row">
-                    <div class="col">
-                        <h1>@Model.Title</h1>
-                    </div>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+<div class="row header">
+    <div class="overlay"></div>
+    <div class="col-md-4">
+        <img class="float-right img-fluid" src="@Model.PosterUrl" alt="@Model.Title">
+    </div>
+    <div class="col">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1>@Model.Title</h1>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <p class="tag-line">
-                            @Model.Tagline
-                        </p>
-                        <p>
-                            <span class="grey-text">
-                                @Model.RunTime m | @Model.ReleaseDate?.Year
-                            </span>
-                            @foreach (var genre in Model.Genres)
-                            {
-                                <span class="badge badge-dark">@genre.Name </span>
-                            }
-                        </p>
-                        @if (Model.Rating != null)
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p class="tag-line">
+                        @Model.Tagline
+                    </p>
+                    <p>
+                        <span class="grey-text">
+                            @Model.RunTime m | @Model.ReleaseDate?.Year
+                        </span>
+                        @foreach (var genre in Model.Genres)
                         {
-                            <p class="badge badge-warning"> @Model.Rating</p>
+                            <span class="badge badge-dark">@genre.Name </span>
                         }
-                        else
-                        {
-                            <p class="badge badge-warning">N/A</p>
-                        }
-                        <p>
-                            @Model.Overview
-                        </p>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="button" class="btn btn-outline-dark btn-sm btn-block">
+                    </p>
+                    @if (Model.Rating != null)
+                    {
+                        <p class="badge badge-warning"> @Model.Rating</p>
+                    }
+                    else
+                    {
+                        <p class="badge badge-warning">N/A</p>
+                    }
+                    <p>
+                        @Model.Overview
+                    </p>
+                </div>
+                <div class="col-md-3">
+                    @if (CurrentUser.IsAuthenticated)
+                    {
+                        <button type="button" class="btn btn-outline-dark btn-sm btn-block" data-toggle="modal" data-target="#addReviewModal">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                             </svg>
                             Review
                         </button>
-                        <button type="button" class="btn btn-outline-dark btn-sm btn-block">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
-                                <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark btn-sm btn-block" style="color: white">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                             </svg>
-                            Trailer
-                        </button>
-                        @if (CurrentUser.IsAuthenticated)
-                        {
-                            <button type="button" class="btn btn-light btn-sm btn-block" data-toggle="modal" data-target="#buyMovieModal">Buy $@Model.Price</button>
-                        }
-                        else
-                        {
-                            <a class="btn btn-light btn-sm btn-block" asp-controller="Account" asp-action="Login">Buy $@Model.Price</a>
-                        }
-                        <button type="button" class="btn btn-light btn-sm btn-block">Watch Movie</button>
-                    </div>
+                            Review
+                        </a>
+                    }
+                    <button type="button" class="btn btn-outline-dark btn-sm btn-block">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                            <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                        </svg>
+                        Trailer
+                    </button>
+                    @if (CurrentUser.IsAuthenticated)
+                    {
+                        <button type="button" class="btn btn-light btn-sm btn-block" data-toggle="modal" data-target="#buyMovieModal">Buy $@Model.Price</button>
+                    }
+                    else
+                    {
+                        <a class="btn btn-light btn-sm btn-block" asp-controller="Account" asp-action="Login">Buy $@Model.Price</a>
+                    }
+                    <button type="button" class="btn btn-light btn-sm btn-block">Watch Movie</button>
                 </div>
             </div>
         </div>
     </div>
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            @TempData["ErrorMessage"]
-        </div>
-    }
+</div>
+<div class="container">
+
     <div class="row">
         <div class="col-md-4">
             <ul class="list-group">
@@ -205,4 +226,5 @@
         </div>
     </div>
     <partial name="_BuyMovieModal" model="@Model"/>
+    <partial name="_AddReviewModal" model="new ReviewRequestModel {MovieId = Model.Id}"/>
 </div>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MovieShop.Core.Entities;
+using MovieShop.Core.Models.Request;
 using MovieShop.Core.Models.Response;
 using MovieShop.Core.RepositoryInterface;
 using MovieShop.Core.ServiceInterface;
@@ -14,12 +15,14 @@ namespace MovieShop.Infrastructure.Services
         private readonly IMovieRepository _repository;
         private readonly ICurrentUser _currentUser;
         private readonly IAsyncRepository<Purchase> _purchaseRepository;
+        private readonly IReviewRepository _reviewRepository;
 
-        public MovieService(IMovieRepository repository, ICurrentUser currentUser, IAsyncRepository<Purchase> purchaseRepository)
+        public MovieService(IMovieRepository repository, ICurrentUser currentUser, IAsyncRepository<Purchase> purchaseRepository, IReviewRepository reviewRepository)
         {
             _repository = repository;
             _currentUser = currentUser;
             _purchaseRepository = purchaseRepository;
+            _reviewRepository = reviewRepository;
         }
 
         public async Task<MovieDetailsResponse> GetMovieById(int id)
@@ -161,6 +164,27 @@ namespace MovieShop.Infrastructure.Services
             }
 
             return null;
+        }
+
+        public async Task<bool> PostReview(ReviewRequestModel requestModel)
+        {
+            var dbReview = await _reviewRepository.GetByIdAsync(_currentUser.UserId, requestModel.MovieId);
+            if (dbReview != null)
+            {
+                return false;
+            }
+
+            var review = new Review()
+            {
+                MovieId = requestModel.MovieId,
+                UserId = _currentUser.UserId,
+                Rating = requestModel.Rating,
+                ReviewText = requestModel.ReviewText,
+            };
+
+            await _reviewRepository.AddAsync(review);
+
+            return true;
         }
     }
 }

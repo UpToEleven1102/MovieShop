@@ -41,4 +41,16 @@ namespace MovieShop.Core.Models.Request
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
+
+    public class ReviewRequestModel
+    {
+        [Required]
+        [Range(0, 10)]
+        public decimal Rating { get; set; }
+
+        public string ReviewText { get; set; }
+
+        [Required]
+        public int MovieId { get; set; }
+    }
 }

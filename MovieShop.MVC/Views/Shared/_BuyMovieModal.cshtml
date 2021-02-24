@@ -6,9 +6,6 @@
     font-weight: 600;
     color: red;
   }
-  img.width100 {
-    width:  100%;
-  }
 </style>
 
 <div class="modal fade" id="buyMovieModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -23,7 +20,7 @@
       <div class="modal-body">
         <div class="row">
           <div class="col">
-            <img class="width100" src="@Model.PosterUrl" alt="@Model.Title">
+            <img style="width: 100%" src="@Model.PosterUrl" alt="@Model.Title">
           </div>
           <div class="col">
             <h3>@Model.Title</h3>
