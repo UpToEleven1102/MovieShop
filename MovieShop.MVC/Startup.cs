@@ -1,3 +1,5 @@
+using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +38,14 @@ namespace MovieShop.MVC
             services.AddTransient<ICryptoService, CryptoService>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
+                opt =>
+                {
+                    opt.Cookie.Name = "MovieShopAuthCookie";
+                    opt.ExpireTimeSpan = TimeSpan.FromHours(2);
+                    opt.LoginPath = "/Account/Login";
+                });
             
             services.AddDbContext<MovieShopDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MovieDbConnectionString"),
@@ -61,6 +71,8 @@ namespace MovieShop.MVC
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
