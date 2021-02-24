@@ -1,24 +1,37 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MovieShop.Core.Models.Request;
+using MovieShop.Core.ServiceInterface;
 
 namespace MovieShop.MVC.Controllers
 {
     public class AccountController : Controller
     {
-        public IActionResult Register(UserRegisterRequestModel userModel)
+        private readonly IUserService _userService;
+
+        public AccountController(IUserService userService)
         {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
+            _userService = userService;
+        }
+
+        public IActionResult Register()
+        {
             return View();
         }
         
         [HttpPost]
-        public IActionResult Login(Object accountRequest) // Replace with Account request model later
+        public async Task<IActionResult> Register(UserRegisterRequestModel userModel)
         {
-            Console.WriteLine(accountRequest);
+            if (!ModelState.IsValid) return View();
+
+            await _userService.RegisterUser(userModel);
+            return RedirectToAction("Login");
+        }
+        
+        [HttpGet]
+        public IActionResult Login()
+        {
             return View();
         }
         

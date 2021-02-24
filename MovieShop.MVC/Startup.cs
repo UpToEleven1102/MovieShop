@@ -32,6 +32,10 @@ namespace MovieShop.MVC
             
             services.AddTransient<IGenreService, GenreService>();
             services.AddTransient<IAsyncRepository<Genre>, EfRepository<Genre>>();
+
+            services.AddTransient<ICryptoService, CryptoService>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUserService, UserService>();
             
             services.AddDbContext<MovieShopDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MovieDbConnectionString"),
