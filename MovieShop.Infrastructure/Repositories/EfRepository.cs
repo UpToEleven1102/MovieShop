@@ -13,7 +13,7 @@ namespace MovieShop.Infrastructure.Repositories
     {
         protected readonly MovieShopDbContext db;
 
-        protected EfRepository(MovieShopDbContext dbContext)
+        public EfRepository(MovieShopDbContext dbContext)
         {
             db = dbContext;
         }
