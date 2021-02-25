@@ -1,16 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MovieShop.Core.RepositoryInterface;
+using MovieShop.Core.ServiceInterface;
+using MovieShop.Infrastructure.Data;
+using MovieShop.Infrastructure.Repositories;
+using MovieShop.Infrastructure.Services;
 
 namespace MovieShop.API
 {
@@ -26,11 +25,21 @@ namespace MovieShop.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
+
+            services.AddTransient<ICurrentUser, CurrentUser>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ICryptoService, CryptoService>();
+
+            services.AddHttpContextAccessor();
+            
+            services.AddDbContext<MovieShopDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("MovieDbConnectionString")));
+            
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MovieShop.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "MovieShop.API", Version = "v1"});
             });
         }
 
@@ -48,12 +57,11 @@ namespace MovieShop.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

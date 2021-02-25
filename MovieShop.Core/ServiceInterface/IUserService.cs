@@ -10,5 +10,7 @@ namespace MovieShop.Core.ServiceInterface
         Task<bool> RegisterUser(UserRegisterRequestModel userRequestModel);
 
         Task<UserLoginResponseModel> ValidateUser(string email, string password);
+
+        Task<UserResponseModel> GetUserById(int id);
     }
 }

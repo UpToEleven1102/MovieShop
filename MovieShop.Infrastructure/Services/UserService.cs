@@ -75,5 +75,21 @@ namespace MovieShop.Infrastructure.Services
 
             return null;
         }
+
+        public async Task<UserResponseModel> GetUserById(int id)
+        {
+            var dbUser = await _repository.GetByIdAsync(id);
+            
+            return new UserResponseModel()
+            {
+                Id = dbUser.Id,
+                Email = dbUser.Email,
+                PhoneNumber = dbUser.PhoneNumber,
+                FirstName = dbUser.FirstName,
+                LastName = dbUser.LastName,
+                DateOfBirth = dbUser.DateOfBirth,
+            };
+
+        }
     }
 }
