@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using MovieShop.Core.Entities;
 using MovieShop.Core.RepositoryInterface;
 using MovieShop.Core.ServiceInterface;
 using MovieShop.Infrastructure.Data;
@@ -31,6 +32,13 @@ namespace MovieShop.API
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ICryptoService, CryptoService>();
+
+            services.AddTransient<IMovieRepository, MovieRepository>();
+            services.AddTransient<IMovieService, MovieService>();
+
+            services.AddTransient<IAsyncRepository<Purchase>, EfRepository<Purchase>>();
+            services.AddTransient<IAsyncRepository<Genre>, EfRepository<Genre>>();
+            services.AddTransient<IReviewRepository, ReviewRepository>();
 
             services.AddHttpContextAccessor();
             

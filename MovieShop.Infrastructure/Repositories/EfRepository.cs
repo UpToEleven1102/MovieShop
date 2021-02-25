@@ -23,7 +23,7 @@ namespace MovieShop.Infrastructure.Repositories
             return await db.Set<T>().FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> ListAllAsync()
+        public virtual async Task<IEnumerable<T>> ListAllAsync()
         {
             return await db.Set<T>().ToListAsync();
         }

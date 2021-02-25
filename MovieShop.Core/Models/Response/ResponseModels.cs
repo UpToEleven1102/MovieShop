@@ -34,4 +34,11 @@ namespace MovieShop.Core.Models.Response
         
         public DateTime? DateOfBirth { get; set; }
     }
+
+    public class ReviewResponseModel
+    {
+        public decimal Rating { get; set; }
+
+        public string ReviewText { get; set; }
+    }
 }

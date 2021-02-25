@@ -38,13 +38,13 @@ namespace MovieShop.API.Controllers
                 var registerRes = await _userService.RegisterUser(userRequestModel);
                 return StatusCode(registerRes ? 201 : 500);
             }
-            catch (ConflictException ex)
+            catch (ConflictException _)
             {
                 return BadRequest("Email is already used!");
             }
-            catch (Exception e)
+            catch (Exception _)
             {
-                // LogException
+                // LogException?
                 return StatusCode(500, "Something went wrong");
             }
         }

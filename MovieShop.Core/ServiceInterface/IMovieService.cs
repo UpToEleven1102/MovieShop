@@ -18,5 +18,10 @@ namespace MovieShop.Core.ServiceInterface
         Task<MovieDetailsResponse> BuyMovie(int id);
 
         Task<bool> PostReview(ReviewRequestModel requestModel);
+
+        Task<IEnumerable<MovieDetailsResponse>> GetAllMovies();
+        Task<IEnumerable<MovieDetailsResponse>> GetMoviesByGenreId(int genreId);
+
+        Task<IEnumerable<ReviewResponseModel>> GetReviewsByMovieId(int movieId);
     }
 }

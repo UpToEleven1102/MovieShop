@@ -12,12 +12,13 @@ namespace MovieShop.Infrastructure.Services
 {
     public class MovieService : IMovieService
     {
-        private readonly IMovieRepository _repository;
         private readonly ICurrentUser _currentUser;
         private readonly IAsyncRepository<Purchase> _purchaseRepository;
+        private readonly IMovieRepository _repository;
         private readonly IReviewRepository _reviewRepository;
 
-        public MovieService(IMovieRepository repository, ICurrentUser currentUser, IAsyncRepository<Purchase> purchaseRepository, IReviewRepository reviewRepository)
+        public MovieService(IMovieRepository repository, ICurrentUser currentUser,
+            IAsyncRepository<Purchase> purchaseRepository, IReviewRepository reviewRepository)
         {
             _repository = repository;
             _currentUser = currentUser;
@@ -101,11 +102,8 @@ namespace MovieShop.Infrastructure.Services
         public async Task<MovieDetailsResponse> BuyMovie(int id)
         {
             var movie = await _repository.GetByIdAsync(id);
-            if (movie == null)
-            {
-                return null;
-            }
-            var purchase = new Purchase()
+            if (movie == null) return null;
+            var purchase = new Purchase
             {
                 UserId = _currentUser.UserId,
                 TotalPrice = movie.Price,
@@ -169,22 +167,151 @@ namespace MovieShop.Infrastructure.Services
         public async Task<bool> PostReview(ReviewRequestModel requestModel)
         {
             var dbReview = await _reviewRepository.GetByIdAsync(_currentUser.UserId, requestModel.MovieId);
-            if (dbReview != null)
-            {
-                return false;
-            }
+            if (dbReview != null) return false;
 
-            var review = new Review()
+            var review = new Review
             {
                 MovieId = requestModel.MovieId,
                 UserId = _currentUser.UserId,
                 Rating = requestModel.Rating,
-                ReviewText = requestModel.ReviewText,
+                ReviewText = requestModel.ReviewText
             };
 
             await _reviewRepository.AddAsync(review);
 
             return true;
+        }
+
+        public async Task<IEnumerable<MovieDetailsResponse>> GetAllMovies()
+        {
+            var movies = await _repository.ListAllAsync();
+            var movieResponses = new List<MovieDetailsResponse>();
+
+            foreach (var movie in movies)
+            {
+                var movieDetail = new MovieDetailsResponse();
+                movieDetail.Id = movie.Id;
+                movieDetail.Title = movie.Title;
+                movieDetail.Overview = movie.Overview;
+                movieDetail.Tagline = movie.Tagline;
+                movieDetail.Budget = movie.Budget;
+                movieDetail.Revenue = movie.Revenue;
+                movieDetail.ImdbUrl = movie.ImdbUrl;
+                movieDetail.TmdbUrl = movie.TmdbUrl;
+                movieDetail.PosterUrl = movie.PosterUrl;
+                movieDetail.BackdropUrl = movie.BackdropUrl;
+                movieDetail.OriginalLanguage = movie.OriginalLanguage;
+                movieDetail.ReleaseDate = movie.ReleaseDate;
+                movieDetail.RunTime = movie.RunTime;
+                movieDetail.Price = movie.Price;
+                movieDetail.Genres = new List<GenreModel>();
+
+                foreach (var genre in movie.Genres)
+                    movieDetail.Genres.Add(new GenreModel
+                    {
+                        Id = genre.Id,
+                        Name = genre.Name
+                    });
+
+                movieDetail.Casts = new List<CastResponseModel>();
+                foreach (var mc in movie.MovieCasts)
+                    movieDetail.Casts.Add(new CastResponseModel
+                    {
+                        Id = mc.Cast.Id,
+                        Name = mc.Cast.Name,
+                        Gender = mc.Cast.Gender,
+                        TmdbUrl = mc.Cast.TmdbUrl,
+                        ProfilePath = mc.Cast.ProfilePath,
+                        Character = mc.Character
+                    });
+
+                if (movie.Reviews.Any())
+                {
+                    decimal rating = 0;
+                    foreach (var review in movie.Reviews) rating += review.Rating;
+
+                    movieDetail.Rating = rating / movie.Reviews.Count();
+                }
+
+                movieResponses.Add(movieDetail);
+            }
+
+            return movieResponses;
+        }
+
+        public async Task<IEnumerable<MovieDetailsResponse>> GetMoviesByGenreId(int genreId)
+        {
+            var movies = await _repository.GetMoviesByGenreId(genreId);
+            var movieResponses = new List<MovieDetailsResponse>();
+
+            foreach (var movie in movies)
+            {
+                var movieDetail = new MovieDetailsResponse();
+                movieDetail.Id = movie.Id;
+                movieDetail.Title = movie.Title;
+                movieDetail.Overview = movie.Overview;
+                movieDetail.Tagline = movie.Tagline;
+                movieDetail.Budget = movie.Budget;
+                movieDetail.Revenue = movie.Revenue;
+                movieDetail.ImdbUrl = movie.ImdbUrl;
+                movieDetail.TmdbUrl = movie.TmdbUrl;
+                movieDetail.PosterUrl = movie.PosterUrl;
+                movieDetail.BackdropUrl = movie.BackdropUrl;
+                movieDetail.OriginalLanguage = movie.OriginalLanguage;
+                movieDetail.ReleaseDate = movie.ReleaseDate;
+                movieDetail.RunTime = movie.RunTime;
+                movieDetail.Price = movie.Price;
+                
+                // movieDetail.Genres = new List<GenreModel>();
+
+                // foreach (var genre in movie.Genres)
+                //     movieDetail.Genres.Add(new GenreModel
+                //     {
+                //         Id = genre.Id,
+                //         Name = genre.Name
+                //     });
+                //
+                // movieDetail.Casts = new List<CastResponseModel>();
+                // foreach (var mc in movie.MovieCasts)
+                //     movieDetail.Casts.Add(new CastResponseModel
+                //     {
+                //         Id = mc.Cast.Id,
+                //         Name = mc.Cast.Name,
+                //         Gender = mc.Cast.Gender,
+                //         TmdbUrl = mc.Cast.TmdbUrl,
+                //         ProfilePath = mc.Cast.ProfilePath,
+                //         Character = mc.Character
+                //     });
+                //
+                // if (movie.Reviews.Any())
+                // {
+                //     decimal rating = 0;
+                //     foreach (var review in movie.Reviews) rating += review.Rating;
+                //
+                //     movieDetail.Rating = rating / movie.Reviews.Count();
+                // }
+
+                movieResponses.Add(movieDetail);
+            }
+
+            return movieResponses;
+        }
+
+        public async Task<IEnumerable<ReviewResponseModel>> GetReviewsByMovieId(int movieId)
+        {
+            var movie = await _repository.GetByIdAsync(movieId);
+            var reviewResponses = new List<ReviewResponseModel>();
+
+            foreach (var review in movie.Reviews)
+            {
+                reviewResponses.Add(new ReviewResponseModel()
+                {
+                    Rating = review.Rating,
+                    ReviewText = review.ReviewText,
+                });
+            }
+
+            return reviewResponses;
         }
     }
 }

@@ -25,6 +25,12 @@ namespace MovieShop.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<Movie>> GetMoviesByGenreId(int genreId)
+        {
+            var genre = await db.Genres.Where(g => g.Id == genreId).Include(g => g.Movies).FirstOrDefaultAsync();
+            return genre?.Movies;
+        }
+
         public override async Task<Movie> GetByIdAsync(int id)
         {
             return await db.Movies.Include(m => m.MovieCasts)
@@ -32,6 +38,14 @@ namespace MovieShop.Infrastructure.Repositories
                 .Include(m => m.Genres)
                 .Include(m => m.Reviews)
                 .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public override async Task<IEnumerable<Movie>> ListAllAsync()
+        {
+            return await db.Movies.Include(m => m.MovieCasts)
+                .ThenInclude(mc => mc.Cast)
+                .Include(m => m.Genres)
+                .Include(m => m.Reviews).ToListAsync();
         }
     }
 }
