@@ -182,12 +182,18 @@ namespace MovieShop.Infrastructure.Services
             return true;
         }
 
-        public async Task<IEnumerable<MovieDetailsResponse>> GetAllMovies()
+        public async Task<PaginationResponse<MovieDetailsResponse>> GetMoviesPaginated(int pageNumber, int pageSize)
         {
-            var movies = await _repository.ListAllAsync();
-            var movieResponses = new List<MovieDetailsResponse>();
+            var paginatedMovies = await _repository.GetMoviesPaginated(pageNumber, pageSize);
+            var movieResponses = new PaginationResponse<MovieDetailsResponse>()
+            {
+                PageCount = paginatedMovies.PageCount,
+                PageNumber = paginatedMovies.PageNumber,
+                PageSize = paginatedMovies.PageSize,
+                Data = new List<MovieDetailsResponse>()
+            };
 
-            foreach (var movie in movies)
+            foreach (var movie in paginatedMovies.Data)
             {
                 var movieDetail = new MovieDetailsResponse();
                 movieDetail.Id = movie.Id;
@@ -233,7 +239,7 @@ namespace MovieShop.Infrastructure.Services
                     movieDetail.Rating = rating / movie.Reviews.Count();
                 }
 
-                movieResponses.Add(movieDetail);
+                movieResponses.Data.Add(movieDetail);
             }
 
             return movieResponses;

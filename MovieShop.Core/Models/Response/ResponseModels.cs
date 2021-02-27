@@ -41,4 +41,15 @@ namespace MovieShop.Core.Models.Response
 
         public string ReviewText { get; set; }
     }
+
+    public class PaginationResponse<T> where T : class
+    {
+        public int PageSize { get; set; }
+
+        public int PageCount { get; set; }
+        
+        public int PageNumber { get; set; }
+
+        public ICollection<T> Data { get; set; }
+    }
 }

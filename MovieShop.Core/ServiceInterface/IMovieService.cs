@@ -19,7 +19,7 @@ namespace MovieShop.Core.ServiceInterface
 
         Task<bool> PostReview(ReviewRequestModel requestModel);
 
-        Task<IEnumerable<MovieDetailsResponse>> GetAllMovies();
+        Task<PaginationResponse<MovieDetailsResponse>> GetMoviesPaginated(int pageNumber, int pageSize);
         Task<IEnumerable<MovieDetailsResponse>> GetMoviesByGenreId(int genreId);
 
         Task<IEnumerable<ReviewResponseModel>> GetReviewsByMovieId(int movieId);

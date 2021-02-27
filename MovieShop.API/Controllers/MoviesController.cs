@@ -17,11 +17,13 @@ namespace MovieShop.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber, int pageSize)
         {
+            if (pageSize <= 0 || pageSize > 30) pageSize = 30;
+            if (pageNumber < 0) pageNumber = 0;
             try
             {
-                var movies = await _movieService.GetAllMovies(); // this sh!t takes forever, pagination???
+                var movies = await _movieService.GetMoviesPaginated(pageNumber, pageSize); // this sh!t takes forever, pagination???
                 return Ok(movies);
             }
             catch (Exception _)
@@ -29,7 +31,7 @@ namespace MovieShop.API.Controllers
                 return StatusCode(500, "Something went wrong!");
             }
         }
-        
+
         [HttpGet]
         [Route("{id}/reviews")]
         public async Task<IActionResult> GetReviewsByMovieId(int id)
@@ -76,7 +78,7 @@ namespace MovieShop.API.Controllers
                 return StatusCode(500, "Something went wrong!");
             }
         }
-        
+
         [HttpGet]
         [Route("toprevenue")]
         public async Task<IActionResult> GetTopRevenueMovie()
@@ -104,7 +106,7 @@ namespace MovieShop.API.Controllers
             catch (Exception _)
             {
                 return StatusCode(500, "Something went wrong!");
-            } 
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MovieShop.Core.Entities;
+using MovieShop.Core.Models.Response;
 using MovieShop.Core.RepositoryInterface;
 using MovieShop.Infrastructure.Data;
 
@@ -40,12 +41,22 @@ namespace MovieShop.Infrastructure.Repositories
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public override async Task<IEnumerable<Movie>> ListAllAsync()
+        public async Task<PaginationResponse<Movie>> GetMoviesPaginated(int pageNumber = 0, int pageSize = 30)
         {
-            return await db.Movies.Include(m => m.MovieCasts)
-                .ThenInclude(mc => mc.Cast)
-                .Include(m => m.Genres)
-                .Include(m => m.Reviews).ToListAsync();
+            int pageCount = await db.Movies.CountAsync() / pageSize;
+
+            if (pageNumber >= pageCount) pageNumber = pageCount - 1;
+
+            return new PaginationResponse<Movie>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = await db.Movies.Skip(pageNumber * pageSize).Take(pageSize).Include(m => m.MovieCasts)
+                    .ThenInclude(mc => mc.Cast)
+                    .Include(m => m.Genres)
+                    .Include(m => m.Reviews).ToListAsync(),
+                PageCount = pageCount
+            };
         }
     }
 }
