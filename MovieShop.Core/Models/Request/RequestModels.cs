@@ -53,4 +53,32 @@ namespace MovieShop.Core.Models.Request
         [Required]
         public int MovieId { get; set; }
     }
+
+
+    public class MovieRequestModel
+    {
+        [Required]
+        [MaxLength(256)]
+        public string Title { get; set; }
+        
+        public string Overview { get; set; }
+        
+        [MaxLength(512)]
+        public string Tagline { get; set; }
+        
+        public decimal? Budget { get; set; }
+        
+        public decimal? Revenue { get; set; }
+        public string ImdbUrl { get; set; }
+        
+        public string TmdbUrl { get; set; }
+        
+        public string PosterUrl { get; set; }
+        public string BackdropUrl { get; set; }
+        public string OriginalLanguage { get; set; }
+        
+        [DataType(DataType.Date)]
+        public DateTime? ReleaseDate { get; set; }
+        
+    }
 }
