@@ -40,6 +40,11 @@ namespace MovieShop.API
             services.AddTransient<IAsyncRepository<Genre>, EfRepository<Genre>>();
             services.AddTransient<IReviewRepository, ReviewRepository>();
 
+            services.AddTransient<IAsyncRepository<Cast>, EfRepository<Cast>>();
+            services.AddTransient<ICastService, CastService>();
+
+            services.AddTransient<IGenreService, GenreService>();
+
             services.AddHttpContextAccessor();
             
             services.AddDbContext<MovieShopDbContext>(options =>
