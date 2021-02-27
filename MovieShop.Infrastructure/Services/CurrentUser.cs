@@ -19,9 +19,11 @@ namespace MovieShop.Infrastructure.Services
 
         public string FullName => GetFullName();
 
-        public string Email { get; }
-        public List<string> Roles { get; }
-        public bool IsAdmin { get; }
+        public string Email =>
+            _httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+        public List<string> Roles => GetUserRoles();
+        public bool IsAdmin => GetUserRoles().Contains("admin");
         public int UserId => GetUserId();
 
         private int GetUserId()
@@ -38,6 +40,18 @@ namespace MovieShop.Infrastructure.Services
                 ?.Value;
 
             return lastName + ", " + firstName;
+        }
+
+        private List<string> GetUserRoles()
+        {
+            var response = new List<string>();
+            
+            var roles = _httpContext.HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+            foreach (var role in roles)
+            {
+                response.Add(role.Value);
+            }
+            return response;
         }
     }
 }

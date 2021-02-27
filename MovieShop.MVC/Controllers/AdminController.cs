@@ -1,8 +1,10 @@
 using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MovieShop.MVC.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
         public IActionResult Index()
@@ -10,16 +12,14 @@ namespace MovieShop.MVC.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Create(Object movieRequest)
+        public IActionResult CreateMovie(Object movieRequest)
         {
-            return View();
+            return View("Create");
         }
 
-        [HttpPut]
-        public IActionResult Edit(int id, Object movieRequest)
+        public IActionResult EditMovie(int id, Object movieRequest)
         {
-            return View();
+            return View("Edit");
         }
     }
 }
