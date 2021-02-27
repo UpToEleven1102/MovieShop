@@ -185,7 +185,7 @@ namespace MovieShop.Infrastructure.Services
         public async Task<PaginationResponse<MovieDetailsResponse>> GetMoviesPaginated(int pageNumber, int pageSize)
         {
             var paginatedMovies = await _repository.GetMoviesPaginated(pageNumber, pageSize);
-            var movieResponses = new PaginationResponse<MovieDetailsResponse>()
+            var movieResponses = new PaginationResponse<MovieDetailsResponse>
             {
                 PageCount = paginatedMovies.PageCount,
                 PageNumber = paginatedMovies.PageNumber,
@@ -245,12 +245,18 @@ namespace MovieShop.Infrastructure.Services
             return movieResponses;
         }
 
-        public async Task<IEnumerable<MovieDetailsResponse>> GetMoviesByGenreId(int genreId)
+        public async Task<PaginationResponse<MovieDetailsResponse>> GetMoviesByGenreId(int genreId, int pageNumber = 0,
+            int pageSize = 30)
         {
-            var movies = await _repository.GetMoviesByGenreId(genreId);
-            var movieResponses = new List<MovieDetailsResponse>();
+            var movies = await _repository.GetMoviesByGenreId(genreId, pageNumber, pageSize);
+            var movieResponses = new PaginationResponse<MovieDetailsResponse>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = new List<MovieDetailsResponse>()
+            };
 
-            foreach (var movie in movies)
+            foreach (var movie in movies.Data)
             {
                 var movieDetail = new MovieDetailsResponse();
                 movieDetail.Id = movie.Id;
@@ -267,37 +273,37 @@ namespace MovieShop.Infrastructure.Services
                 movieDetail.ReleaseDate = movie.ReleaseDate;
                 movieDetail.RunTime = movie.RunTime;
                 movieDetail.Price = movie.Price;
+
+                movieDetail.Genres = new List<GenreModel>();
+
+                foreach (var genre in movie.Genres)
+                    movieDetail.Genres.Add(new GenreModel
+                    {
+                        Id = genre.Id,
+                        Name = genre.Name
+                    });
                 
-                // movieDetail.Genres = new List<GenreModel>();
+                movieDetail.Casts = new List<CastResponseModel>();
+                foreach (var mc in movie.MovieCasts)
+                    movieDetail.Casts.Add(new CastResponseModel
+                    {
+                        Id = mc.Cast.Id,
+                        Name = mc.Cast.Name,
+                        Gender = mc.Cast.Gender,
+                        TmdbUrl = mc.Cast.TmdbUrl,
+                        ProfilePath = mc.Cast.ProfilePath,
+                        Character = mc.Character
+                    });
+                
+                if (movie.Reviews.Any())
+                {
+                    decimal rating = 0;
+                    foreach (var review in movie.Reviews) rating += review.Rating;
+                
+                    movieDetail.Rating = rating / movie.Reviews.Count();
+                }
 
-                // foreach (var genre in movie.Genres)
-                //     movieDetail.Genres.Add(new GenreModel
-                //     {
-                //         Id = genre.Id,
-                //         Name = genre.Name
-                //     });
-                //
-                // movieDetail.Casts = new List<CastResponseModel>();
-                // foreach (var mc in movie.MovieCasts)
-                //     movieDetail.Casts.Add(new CastResponseModel
-                //     {
-                //         Id = mc.Cast.Id,
-                //         Name = mc.Cast.Name,
-                //         Gender = mc.Cast.Gender,
-                //         TmdbUrl = mc.Cast.TmdbUrl,
-                //         ProfilePath = mc.Cast.ProfilePath,
-                //         Character = mc.Character
-                //     });
-                //
-                // if (movie.Reviews.Any())
-                // {
-                //     decimal rating = 0;
-                //     foreach (var review in movie.Reviews) rating += review.Rating;
-                //
-                //     movieDetail.Rating = rating / movie.Reviews.Count();
-                // }
-
-                movieResponses.Add(movieDetail);
+                movieResponses.Data.Add(movieDetail);
             }
 
             return movieResponses;
@@ -309,13 +315,11 @@ namespace MovieShop.Infrastructure.Services
             var reviewResponses = new List<ReviewResponseModel>();
 
             foreach (var review in movie.Reviews)
-            {
-                reviewResponses.Add(new ReviewResponseModel()
+                reviewResponses.Add(new ReviewResponseModel
                 {
                     Rating = review.Rating,
-                    ReviewText = review.ReviewText,
+                    ReviewText = review.ReviewText
                 });
-            }
 
             return reviewResponses;
         }

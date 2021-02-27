@@ -12,7 +12,7 @@ namespace MovieShop.Core.RepositoryInterface
 
         Task<IEnumerable<Movie>> GetTopRatedMovies();
         
-        Task<IEnumerable<Movie>> GetMoviesByGenreId(int genreId);
+        Task<PaginationResponse<Movie>> GetMoviesByGenreId(int genreId, int pageNumber, int pageSize);
 
         Task<PaginationResponse<Movie>> GetMoviesPaginated(int pageNumber, int pageSize);
     }

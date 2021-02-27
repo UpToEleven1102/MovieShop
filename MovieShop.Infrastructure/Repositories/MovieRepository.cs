@@ -26,10 +26,23 @@ namespace MovieShop.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Movie>> GetMoviesByGenreId(int genreId)
+        public async Task<PaginationResponse<Movie>> GetMoviesByGenreId(int genreId, int pageNumber = 0,
+            int pageSize = 30)
         {
-            var genre = await db.Genres.Where(g => g.Id == genreId).Include(g => g.Movies).FirstOrDefaultAsync();
-            return genre?.Movies;
+            var genre = await db.Genres.Where(g => g.Id == genreId)
+                .Include(g => g.Movies.OrderByDescending(m => m.CreatedDate).Skip(pageNumber * pageSize).Take(pageSize))
+                .ThenInclude(m => m.MovieCasts)
+                .ThenInclude(mc => mc.Cast)
+                .Include(g => g.Movies)
+                .ThenInclude(m => m.Reviews)
+                .FirstOrDefaultAsync();
+
+            return new PaginationResponse<Movie>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Data = genre?.Movies as ICollection<Movie>
+            };
         }
 
         public override async Task<Movie> GetByIdAsync(int id)
@@ -43,7 +56,7 @@ namespace MovieShop.Infrastructure.Repositories
 
         public async Task<PaginationResponse<Movie>> GetMoviesPaginated(int pageNumber = 0, int pageSize = 30)
         {
-            int pageCount = await db.Movies.CountAsync() / pageSize;
+            var pageCount = await db.Movies.CountAsync() / pageSize;
 
             if (pageNumber >= pageCount) pageNumber = pageCount - 1;
 
@@ -51,7 +64,8 @@ namespace MovieShop.Infrastructure.Repositories
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
-                Data = await db.Movies.Skip(pageNumber * pageSize).Take(pageSize).Include(m => m.MovieCasts)
+                Data = await db.Movies.OrderByDescending(m => m.CreatedDate).Skip(pageNumber * pageSize).Take(pageSize)
+                    .Include(m => m.MovieCasts)
                     .ThenInclude(mc => mc.Cast)
                     .Include(m => m.Genres)
                     .Include(m => m.Reviews).ToListAsync(),

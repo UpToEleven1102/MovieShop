@@ -23,7 +23,9 @@ namespace MovieShop.API.Controllers
             if (pageNumber < 0) pageNumber = 0;
             try
             {
-                var movies = await _movieService.GetMoviesPaginated(pageNumber, pageSize); // this sh!t takes forever, pagination???
+                var movies =
+                    await _movieService.GetMoviesPaginated(pageNumber,
+                        pageSize); // this sh!t takes forever, pagination???
                 return Ok(movies);
             }
             catch (Exception _)
@@ -96,11 +98,13 @@ namespace MovieShop.API.Controllers
 
         [HttpGet]
         [Route("genre/{genreId}")]
-        public async Task<IActionResult> GetMoviesByGenre(int genreId)
+        public async Task<IActionResult> GetMoviesByGenre(int genreId, int pageNumber, int pageSize)
         {
+            if (pageNumber < 0) pageNumber = 0;
+            if (pageSize <= 0 || pageSize > 30) pageSize = 30;
             try
             {
-                var movies = await _movieService.GetMoviesByGenreId(genreId);
+                var movies = await _movieService.GetMoviesByGenreId(genreId, pageNumber, pageSize);
                 return Ok(movies);
             }
             catch (Exception _)
