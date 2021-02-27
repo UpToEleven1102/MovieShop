@@ -19,6 +19,7 @@ namespace MovieShop.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int pageNumber, int pageSize)
         {
+            pageNumber -= 1; // count from page 0
             if (pageSize <= 0 || pageSize > 30) pageSize = 30;
             if (pageNumber < 0) pageNumber = 0;
             try
@@ -100,6 +101,7 @@ namespace MovieShop.API.Controllers
         [Route("genre/{genreId}")]
         public async Task<IActionResult> GetMoviesByGenre(int genreId, int pageNumber, int pageSize)
         {
+            pageNumber = pageNumber - 1;
             if (pageNumber < 0) pageNumber = 0;
             if (pageSize <= 0 || pageSize > 30) pageSize = 30;
             try

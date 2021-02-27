@@ -58,18 +58,18 @@ namespace MovieShop.Infrastructure.Repositories
         {
             var pageCount = await db.Movies.CountAsync() / pageSize;
 
-            if (pageNumber >= pageCount) pageNumber = pageCount - 1;
+            if (pageNumber >= pageCount) pageNumber = pageCount;
 
             return new PaginationResponse<Movie>
             {
-                PageNumber = pageNumber,
+                PageNumber = pageNumber + 1,
                 PageSize = pageSize,
                 Data = await db.Movies.OrderByDescending(m => m.CreatedDate).Skip(pageNumber * pageSize).Take(pageSize)
                     .Include(m => m.MovieCasts)
                     .ThenInclude(mc => mc.Cast)
                     .Include(m => m.Genres)
                     .Include(m => m.Reviews).ToListAsync(),
-                PageCount = pageCount
+                PageCount = pageCount + 1,
             };
         }
     }

@@ -44,6 +44,7 @@ namespace MovieShop.API
             services.AddTransient<ICastService, CastService>();
 
             services.AddTransient<IGenreService, GenreService>();
+            services.AddTransient<IAdminService, AdminService>();
 
             services.AddHttpContextAccessor();
             
