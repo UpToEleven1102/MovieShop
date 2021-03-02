@@ -7,10 +7,10 @@ import {Genre} from '../models/types';
 })
 export class GenreService {
 
-  constructor(protected apiService: ApiService<Genre>) {
+  constructor(protected apiService: ApiService) {
   }
 
   getAllGenres = () => {
-    return this.apiService.getAll('genres');
+    return this.apiService.getAll<Genre>('genres');
   }
 }

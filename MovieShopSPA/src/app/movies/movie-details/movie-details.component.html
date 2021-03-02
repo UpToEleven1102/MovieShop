@@ -1,1 +1,166 @@
-<p>movie-details works!</p>
+<div class="row header" [ngStyle]="{'background-image': 'url(' + movie?.backdropUrl + ')'}"
+     *ngIf="movie; else loadingContainer">
+  <div class="overlay"></div>
+  <div class="col-md-4">
+    <img class="float-right img-fluid" src="{{movie?.posterUrl}}" alt="{{movie?.title}}">
+  </div>
+  <div class="col">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <h1>{{movie?.title}}</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <p class="tag-line">
+            {{movie?.tagline}}
+          </p>
+          <p>
+                        <span class="grey-text">
+                            {{movie?.runTime}} m | {{movie?.releaseDate}}
+                        </span>
+            <span class="badge badge-dark" *ngFor="let genre of movie.genres">{{genre.name}}</span>
+          </p>
+          <p class="badge badge-warning"> {{movie.rating || 'N/A'}}</p>
+          <p>
+            {{movie?.overview}}
+          </p>
+        </div>
+        <div class="col-md-3">
+          <!--          @if (CurrentUser.IsAuthenticated)-->
+          <!--          {-->
+          <!--          <button type="button" class="btn btn-outline-dark btn-sm btn-block" data-toggle="modal" data-target="#addReviewModal">-->
+          <!--              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">-->
+          <!--                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>-->
+          <!--                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>-->
+          <!--              </svg>-->
+          <!--              Review-->
+          <!--          </button>-->
+          <!--          }-->
+          <!--          else-->
+          <!--          {-->
+          <a [routerLink]="['/login']" class="btn btn-outline-dark btn-sm btn-block" style="color: white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                 class="bi bi-pencil-square" viewBox="0 0 16 16">
+              <path
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+              <path fill-rule="evenodd"
+                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+            </svg>
+            Review
+          </a>
+          <!--          }-->
+          <button type="button" class="btn btn-outline-dark btn-sm btn-block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill"
+                 viewBox="0 0 16 16">
+              <path
+                d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+            </svg>
+            Trailer
+          </button>
+          <!--          @if (CurrentUser.IsAuthenticated)-->
+          <!--          {-->
+          <!--          <button type="button" class="btn btn-light btn-sm btn-block" data-toggle="modal" data-target="#buyMovieModal">Buy $@Model.Price</button>-->
+          <!--          }-->
+          <!--          else-->
+          <!--          {-->
+          <a class="btn btn-light btn-sm btn-block" [routerLink]="['/login']">Buy ${{movie.price}}</a>
+          <!--          }-->
+          <button type="button" class="btn btn-light btn-sm btn-block">Watch Movie</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+
+  <div class="row">
+    <div class="col-md-4">
+      <ul class="list-group">
+        <li class="list-group-item">
+          <h2>MOVIE FACTS</h2>
+        </li>
+        <li class="list-group-item">
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                 class="bi bi-calendar-week" viewBox="0 0 16 16">
+              <path
+                d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+              <path
+                d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+            </svg>
+            Release Date <span class="badge badge-dark">{{movie?.releaseDate}} m</span>
+          </p>
+        </li>
+        <li class="list-group-item">
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                 class="bi bi-hourglass-split" viewBox="0 0 16 16">
+              <path
+                d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2h-7zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48V8.35zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"/>
+            </svg>
+            Run Time <span class="badge badge-dark">{{movie?.runTime}} m</span>
+          </p>
+        </li>
+        <li class="list-group-item">
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash"
+                 viewBox="0 0 16 16">
+              <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+              <path
+                d="M0 4a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V6a2 2 0 0 1-2-2H3z"/>
+            </svg>
+            Box Office <span class="badge badge-dark">{{movie?.revenue}}</span>
+          </p>
+        </li>
+        <li class="list-group-item">
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cash-stack"
+                 viewBox="0 0 16 16">
+              <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1H1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+              <path
+                d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V5zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H3z"/>
+            </svg>
+            Budget <span class="badge badge-dark">{{movie?.budget}}</span>
+          </p>
+        </li>
+        <li class="list-group-item">
+          <a href="{{movie?.imdbUrl}}" target="_blank" class="imdb-button">imdb</a>
+          <a href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill"
+                 viewBox="0 0 16 16">
+              <path
+                d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="col">
+      <ul class="list-group">
+        <li class="list-group-item">
+          <h2>Cast</h2>
+        </li>
+        <li class="list-group-item" *ngFor="let cast of movie?.casts">
+          <div class="row">
+            <div class="col">
+              <img class="rounded-circle width40" src="{{cast.profilePath}}" alt="{{cast.name}}">
+            </div>
+            <div class="col">
+              <p>{{cast.name}}</p>
+            </div>
+            <div class="col">
+              <p>{{cast.character}}</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!--  <partial name="_BuyMovieModal" model="@Model"/>-->
+  <!--  <partial name="_AddReviewModal" model="new ReviewRequestModel {MovieId = Model.Id}"/>-->
+</div>
+<ng-template #loadingContainer>
+  <app-spinner></app-spinner>
+</ng-template>

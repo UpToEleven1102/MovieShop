@@ -1,0 +1,52 @@
+img.width40 {
+  width: 40px;
+}
+h2 {
+  font-size: 16px;
+}
+p {
+  font-size: 12px;
+}
+p.tag-line {
+  font-size: 11px;
+  color: #888;
+}
+span.grey-text {
+  color:  #888;
+}
+a.imdb-button {
+  color: #ffffff;
+  font-size: 8px;
+  background-color: black;
+  padding: 5px 0;
+  margin-right: 5px;
+}
+a {
+  color: #000;
+}
+div.header {
+  position:  relative;
+  height:  350px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #000;
+  color:  white;
+}
+div.header img {
+  height:  350px;
+}
+div.header button.btn-outline-dark {
+  color:  white;
+}
+div.header .overlay {
+  position:  absolute;
+  height:  350px;
+  top:  0;
+  left:  0;
+  right:  0;
+  background-color: rgba(0,0,20,.8);
+}
+div.header .col {
+  z-index: 1;
+}

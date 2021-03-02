@@ -8,11 +8,11 @@ import {PaginationResponse} from '../models/types';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService<T> {
+export class ApiService {
   constructor(protected http: HttpClient) {
   }
 
-  getAllPagination(path: string, pageNumber?: number, pageSize?: number): Observable<PaginationResponse<T>> {
+  getAllPagination<T>(path: string, pageNumber?: number, pageSize?: number): Observable<PaginationResponse<T>> {
     let params = new HttpParams();
     if (pageNumber) {
       params = params.append('pageNumber', `${pageNumber}`);
@@ -25,13 +25,13 @@ export class ApiService<T> {
     );
   }
 
-  getAll(path: string): Observable<T[]> {
+  getAll<T>(path: string): Observable<T[]> {
     return this.http.get(`${environment.apiUrl}${path}`).pipe(
       map(res => res as T[])
     );
   }
 
-  getById(id: number, path: string): Observable<T> {
+  getById<T>(id: number, path: string): Observable<T> {
     return this.http.get(`${environment.apiUrl}${path}/` + id).pipe(
       map(res => res as T)
     );
