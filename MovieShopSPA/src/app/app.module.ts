@@ -9,6 +9,7 @@ import { HomeComponent } from './home/home.component';
 import { MovieListComponent } from './movies/movie-list/movie-list.component';
 import {HttpClientModule} from '@angular/common/http';
 import {MovieCardComponent} from './shared/components/movie-card/movie-card.component';
+import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import {MovieCardComponent} from './shared/components/movie-card/movie-card.comp
     HomeComponent,
     MovieListComponent,
     MovieCardComponent,
+    SpinnerComponent,
   ],
   imports: [
     BrowserModule,
