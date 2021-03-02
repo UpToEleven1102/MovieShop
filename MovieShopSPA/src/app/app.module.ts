@@ -11,6 +11,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {MovieCardComponent} from './shared/components/movie-card/movie-card.component';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 import { GenresDropdownComponent } from './shared/components/genres-dropdown/genres-dropdown.component';
+import { MovieDetailsComponent } from './movies/movie-details/movie-details.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { GenresDropdownComponent } from './shared/components/genres-dropdown/gen
     MovieCardComponent,
     SpinnerComponent,
     GenresDropdownComponent,
+    MovieDetailsComponent,
   ],
   imports: [
     BrowserModule,
