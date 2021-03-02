@@ -5,3 +5,8 @@ export type PaginationResponse<T> = {
   data: T[];
 };
 
+export type Genre = {
+  id: number;
+  name: string;
+};
+

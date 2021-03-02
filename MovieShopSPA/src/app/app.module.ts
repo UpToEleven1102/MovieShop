@@ -10,6 +10,7 @@ import { MovieListComponent } from './movies/movie-list/movie-list.component';
 import {HttpClientModule} from '@angular/common/http';
 import {MovieCardComponent} from './shared/components/movie-card/movie-card.component';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
+import { GenresDropdownComponent } from './shared/components/genres-dropdown/genres-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { SpinnerComponent } from './shared/components/spinner/spinner.component'
     MovieListComponent,
     MovieCardComponent,
     SpinnerComponent,
+    GenresDropdownComponent,
   ],
   imports: [
     BrowserModule,
