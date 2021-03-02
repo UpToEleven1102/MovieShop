@@ -47,10 +47,10 @@ namespace MovieShop.API
             services.AddTransient<IAdminService, AdminService>();
 
             services.AddHttpContextAccessor();
-            
+
             services.AddDbContext<MovieShopDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MovieDbConnectionString")));
-            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "MovieShop.API", Version = "v1"});
@@ -67,12 +67,14 @@ namespace MovieShop.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MovieShop.API v1"));
             }
 
+            app.UseCors(builder => { builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod(); });
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthentication();
-            
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
