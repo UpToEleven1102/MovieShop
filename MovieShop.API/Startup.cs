@@ -46,6 +46,8 @@ namespace MovieShop.API
             services.AddTransient<IGenreService, GenreService>();
             services.AddTransient<IAdminService, AdminService>();
 
+            services.AddTransient<IJwtService, JwtService>();
+
             services.AddHttpContextAccessor();
 
             services.AddDbContext<MovieShopDbContext>(options =>

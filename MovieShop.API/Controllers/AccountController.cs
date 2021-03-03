@@ -13,12 +13,14 @@ namespace MovieShop.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly ICurrentUser _currentUser;
+        private readonly IJwtService _jwtService;
         private readonly IUserService _userService;
 
-        public AccountController(ICurrentUser currentUser, IUserService userService)
+        public AccountController(ICurrentUser currentUser, IUserService userService, IJwtService jwtService)
         {
             _currentUser = currentUser;
             _userService = userService;
+            _jwtService = jwtService;
         }
 
         [HttpGet]
@@ -51,9 +53,25 @@ namespace MovieShop.API.Controllers
 
         [HttpPost]
         [Route("login")]
-        public Task<IActionResult> Login(UserLoginRequestModel userModel)
+        public async Task<IActionResult> Login(UserLoginRequestModel userModel)
         {
-            throw new NotImplementedException();
+            if (!ModelState.IsValid)
+                return Unauthorized("Invalid or missing params");
+
+            try
+            {
+                var user = await _userService.ValidateUser(userModel.Email, userModel.Password);
+                if (user == null) return Unauthorized("Invalid email or password");
+
+                var token = _jwtService.GenerateJwtToken(user);
+
+                return Ok(new {token});
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpGet]
