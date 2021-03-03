@@ -12,6 +12,10 @@ export class MovieService {
   constructor(protected apiService: ApiService) {
   }
 
+  getTopGrossingMovies(): Observable<MovieDetail[]> {
+    return this.apiService.getAll<MovieDetail>('movies/toprevenue');
+  }
+
   getAllMovie(pageNumber?: number, pageSize?: number): Observable<PaginationResponse<MovieCard>> {
     return this.apiService.getAllPagination<MovieCard>('movies', pageNumber, pageSize);
   }

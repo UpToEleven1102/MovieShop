@@ -5,8 +5,7 @@ import {MovieListComponent} from './movies/movie-list/movie-list.component';
 import {MovieDetailsComponent} from './movies/movie-details/movie-details.component';
 
 const routes: Routes = [
-  {path: '', component: MovieListComponent},
-  // {path: '', component: HomeComponent},
+  {path: '', component: HomeComponent},
   {path: 'movies', component: MovieListComponent},
   {path: 'movies/:id', component: MovieDetailsComponent}
 ];

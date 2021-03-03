@@ -1,1 +1,10 @@
-<p>Home Component</p>
+<div class="row" *ngIf="movies; else loadingContainer">
+  <div class="col-6 col-lg-3 col-sm-4 col-xl-2"
+       *ngFor="let movie of movies">
+    <!-- call my movie Card and pass movie object to the child movie card component -->
+    <app-movie-card [movie]="movie"></app-movie-card>
+  </div>
+</div>
+<ng-template #loadingContainer>
+  <app-spinner></app-spinner>
+</ng-template>
