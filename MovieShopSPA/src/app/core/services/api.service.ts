@@ -3,7 +3,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
-import {PaginationResponse} from '../models/types';
+import {PaginationResponse} from '../../shared/models/types';
 
 @Injectable({
   providedIn: 'root'

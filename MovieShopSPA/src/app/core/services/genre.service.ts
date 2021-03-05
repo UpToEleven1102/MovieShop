@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
-import {Genre} from '../models/types';
+import {Genre} from '../../shared/models/types';
 
 @Injectable({
   providedIn: 'root'

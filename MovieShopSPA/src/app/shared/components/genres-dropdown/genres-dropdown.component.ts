@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {GenreService} from '../../../core/services/genre.service';
 import {Subscription} from 'rxjs';
-import {Genre} from '../../../core/models/types';
+import {Genre} from '../../models/types';
 
 @Component({
   selector: 'app-genres-dropdown',

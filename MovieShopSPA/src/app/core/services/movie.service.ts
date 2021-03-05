@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {Observable} from 'rxjs';
-import {MovieCard} from '../models/movie-card';
-import {MovieDetail, PaginationResponse} from '../models/types';
+import {MovieCard} from '../../shared/models/movie-card';
+import {MovieDetail, PaginationResponse} from '../../shared/models/types';
 
 @Injectable({
   providedIn: 'root'

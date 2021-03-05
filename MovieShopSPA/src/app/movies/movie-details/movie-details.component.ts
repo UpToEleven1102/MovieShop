@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MovieDetail} from '../../core/models/types';
+import {MovieDetail} from '../../shared/models/types';
 import {ActivatedRoute} from '@angular/router';
 import {MovieService} from '../../core/services/movie.service';
 import {Subscription} from 'rxjs';

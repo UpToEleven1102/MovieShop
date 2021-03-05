@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MovieCard} from '../../core/models/movie-card';
+import {MovieCard} from '../../shared/models/movie-card';
 import {Subscription} from 'rxjs';
 import {MovieService} from '../../core/services/movie.service';
-import {PaginationResponse} from '../../core/models/types';
+import {PaginationResponse} from '../../shared/models/types';
 
 @Component({
   selector: 'app-movie-list',
