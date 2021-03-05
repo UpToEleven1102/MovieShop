@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Login } from '../../shared/models/login';
+import {AuthenticationService} from '../../core/services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -7,16 +8,29 @@ import { Login } from '../../shared/models/login';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  invalidLogin = false;
+  errorMessage?: string;
+  ngForm: any;
 
   userLogin: Login = {
     email: '',
     password: '',
   };
 
-  constructor() {}
+  constructor(protected authenticationService: AuthenticationService) {}
 
   ngOnInit(): void {}
 
-  login(): void {}
+  login(): void {
+    this.authenticationService.login(this.userLogin).subscribe(res => {
+      if (res) {
+        console.log(res);
+      }
+    }, error => {
+      console.log(error);
+    });
+
+    if (this.errorMessage) {
+      this.errorMessage = undefined;
+    }
+  }
 }
