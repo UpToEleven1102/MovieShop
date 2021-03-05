@@ -12,6 +12,7 @@ import {MovieCardComponent} from './shared/components/movie-card/movie-card.comp
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 import { GenresDropdownComponent } from './shared/components/genres-dropdown/genres-dropdown.component';
 import { MovieDetailsComponent } from './movies/movie-details/movie-details.component';
+import {AuthModule} from './auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { MovieDetailsComponent } from './movies/movie-details/movie-details.comp
     BrowserModule,
     AppRoutingModule,
     NgbModule,
-    HttpClientModule
+    HttpClientModule,
+    AuthModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
